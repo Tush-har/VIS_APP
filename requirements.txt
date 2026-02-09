@@ -1,0 +1,11 @@
+ultralytics
+opencv-python
+numpy
+pandas
+pyyaml
+mlflow
+boto3
+fastapi
+uvicorn
+python-multipart
+fastapi

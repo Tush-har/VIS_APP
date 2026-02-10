@@ -12,6 +12,7 @@ Unlike consumer-facing applications, VIS_APP is an **internal ML platform** engi
 
 VIS_APP follows a linear MLOps pipeline designed for reproducibility and scalability:
 
+```mermaid
 graph TD
     A["User (ZIP Upload)"] -->|API Request| B("FastAPI Service")
     B --> C{"Data Validation"}
@@ -63,7 +64,7 @@ CI/CD: GitHub Actions
 
 Cloud Provider: AWS (S3, ECR, EC2, IAM)
 
-📂 Project Structure
+    📂 Project Structure
 
 VIS_APP/
 ├── app/
@@ -84,7 +85,7 @@ VIS_APP/
 ├── Dockerfile                 # Container definition
 └── requirements.txt           # Python dependencies
 
-🔁 Complete MLOps Lifecycle
+    🔁 Complete MLOps Lifecycle
 VIS_APP demonstrates an end-to-end implementation across 14 distinct phases:
 
 Foundation: Modular, config-driven code structure.
@@ -123,14 +124,14 @@ POST,/train-async/{job_id},Triggers asynchronous YOLO training for a specific jo
 GET,/download/model/{job_id},Retrieves the latest trained model (best.pt) from S3.
 GET,/dataset/metadata/{job_id},Fetches dataset statistics and lineage info.
 
-🔐 Security & Best Practices
+    🔐 Security & Best Practices
 IAM Roles: Used instead of hardcoded AWS keys to manage permissions securely.
 
 Statelessness: The container does not rely on local storage for persistence; it relies on S3.
 
 Immutability: Dataset metadata and trained model versions are immutable to ensure historical accuracy.
 
-🎯 Project Goal
+    🎯 Project Goal
 VIS_APP is not a tutorial project. It is a demonstration of Systems Engineering applied to AI. It highlights the ability to:
 
 Design modular, maintainable software architecture.
@@ -141,7 +142,7 @@ Manage cloud infrastructure and deployments (DevOps).
 
 Oversee the full lifecycle of a machine learning model (MLOps).
 
-📌 Author
+    📌 Author
 Tushar Awasthi AI/ML Engineer | Computer Vision Specialist
 
 Focused on building production-grade ML systems, scalable MLOps pipelines, and industrial automation solutions.

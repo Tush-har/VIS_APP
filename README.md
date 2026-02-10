@@ -12,8 +12,7 @@ Unlike consumer-facing applications, VIS_APP is an **internal ML platform** engi
 
 VIS_APP follows a linear MLOps pipeline designed for reproducibility, scalability, and production deployment.
 
-```mermaid
-graph TD
+
     A["User (ZIP Upload)"] -->|API Request| B["FastAPI Service"]
     B --> C{"Data Validation"}
     C -->|Pass| D["Data Transformation (XML to YOLO)"]

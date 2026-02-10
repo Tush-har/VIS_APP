@@ -6,6 +6,7 @@ import time
 import shutil
 from src.utils.versioning import get_next_version, update_latest_version
 from src.constants import RUNS_DIR
+from src.utils.s3_utils import upload_file_to_s3
 
 from src.constants import (
     BASE_UPLOAD_DIR,
@@ -141,6 +142,26 @@ def train_yolo_model(
         mlflow.log_artifact(str(registry_model_path), artifact_path="model")
         mlflow.log_artifact(str(metrics_path), artifact_path="metadata")
         mlflow.log_artifact(str(params_path), artifact_path="metadata")
+        s3_base_key = f"{job_id}/runs/{version}"
+
+        upload_file_to_s3(
+            registry_model_path,
+            f"{s3_base_key}/model/best.pt"
+        )
+
+        upload_file_to_s3(
+            metrics_path,
+            f"{s3_base_key}/metrics.json"
+        )
+
+        upload_file_to_s3(
+            params_path,
+            f"{s3_base_key}/params.json"
+        )
+
+
+        
+
 
         # -----------------------------
         # FINAL RETURN (last line)

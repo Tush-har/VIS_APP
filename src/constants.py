@@ -46,3 +46,7 @@ VERSION_PREFIX = "v"
 
 # ---------- Dataset Metadata ----------
 DATASET_METADATA_FILE = "dataset_metadata.json"
+# ---------- S3 ----------
+S3_BUCKET_NAME = "vis-app-ml-artifacts"
+S3_ARTIFACT_PREFIX = ""
+S3_DATASET_PREFIX = "dataset"

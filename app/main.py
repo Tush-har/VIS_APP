@@ -7,6 +7,15 @@ from src.utils.job_status import read_status
 from src.utils.versioning import get_latest_version
 from src.constants import RUNS_DIR
 from src.constants import DATASET_METADATA_FILE
+from src.utils.s3_utils import download_file_from_s3
+from tempfile import TemporaryDirectory
+from src.utils.s3_utils import download_file_from_s3
+from tempfile import TemporaryDirectory
+
+
+from tempfile import TemporaryDirectory
+from src.utils.s3_utils import download_file_from_s3
+from src.constants import DATASET_METADATA_FILE, S3_DATASET_PREFIX
 
 from src.constants import (
     BASE_UPLOAD_DIR,
@@ -40,7 +49,7 @@ from src.constants import (
     DEFAULT_MODEL
 )
 
-app = FastAPI(title="VIS_APP – Vision Training Platform")
+
 
 # Ensure base directory exists
 BASE_UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -49,6 +58,7 @@ BASE_UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 # -------------------------------
 # Upload Dataset API
 # -------------------------------
+app = FastAPI(title="VIS_APP – Vision Training Platform")
 @app.post("/upload-dataset")
 async def upload_dataset(file: UploadFile = File(...)):
 
@@ -112,25 +122,25 @@ def preprocess_dataset(job_id: str):
     return {"status": "dataset processed successfully"}
 
 
-# training API
+# # training API
 
-@app.post("/train/{job_id}")
-def start_training(
-    job_id: str,
-    epochs: int = DEFAULT_EPOCHS,
-    imgsz: int = DEFAULT_IMGSZ,
-    batch: int = DEFAULT_BATCH,
-    model: str = DEFAULT_MODEL
-):
-    result = train_yolo_model(
-        job_id=job_id,
-        epochs=epochs,
-        imgsz=imgsz,
-        batch=batch,
-        model_name=model
-    )
+# @app.post("/train/{job_id}")
+# def start_training(
+#     job_id: str,
+#     epochs: int = DEFAULT_EPOCHS,
+#     imgsz: int = DEFAULT_IMGSZ,
+#     batch: int = DEFAULT_BATCH,
+#     model: str = DEFAULT_MODEL
+# ):
+#     result = train_yolo_model(
+#         job_id=job_id,
+#         epochs=epochs,
+#         imgsz=imgsz,
+#         batch=batch,
+#         model_name=model
+#     )
 
-    return result
+#     return result
 
 
 
@@ -267,19 +277,65 @@ def download_versioned_model(job_id: str, version: str):
 
 
 
+# @app.get("/dataset/metadata/{job_id}")
+# def get_dataset_metadata(job_id: str):
+#     metadata_path = (
+#         BASE_UPLOAD_DIR
+#         / job_id
+#         / DATASET_METADATA_FILE
+#     )
+
+#     if not metadata_path.exists():
+#         raise HTTPException(status_code=404, detail="Dataset metadata not found")
+
+#     return FileResponse(
+#         path=metadata_path,
+#         filename=DATASET_METADATA_FILE,
+#         media_type="application/json"
+#     )
+
+
+
+# @app.get("/download/model/{job_id}")
+# def download_latest_model(job_id: str):
+#     artifacts_dir = BASE_UPLOAD_DIR / job_id / ARTIFACTS_DIR
+#     version = get_latest_version(artifacts_dir)
+
+#     s3_key = f"{job_id}/runs/{version}/model/best.pt"
+
+#     with TemporaryDirectory() as tmp:
+#         local_path = Path(tmp) / "best.pt"
+#         download_file_from_s3(local_path, s3_key)
+#         return FileResponse(local_path, filename="best.pt")
+
+
+
+# s3 metadata fetch
+@app.get("/download/model/{job_id}")
+def download_latest_model(job_id: str):
+    artifacts_dir = BASE_UPLOAD_DIR / job_id / ARTIFACTS_DIR
+    version = get_latest_version(artifacts_dir)
+
+    s3_key = f"{job_id}/runs/{version}/model/best.pt"
+
+    with TemporaryDirectory() as tmp:
+        local_path = Path(tmp) / "best.pt"
+        download_file_from_s3(local_path, s3_key)
+        return FileResponse(local_path, filename="best.pt")
+
+
+
 @app.get("/dataset/metadata/{job_id}")
 def get_dataset_metadata(job_id: str):
-    metadata_path = (
-        BASE_UPLOAD_DIR
-        / job_id
-        / DATASET_METADATA_FILE
-    )
 
-    if not metadata_path.exists():
-        raise HTTPException(status_code=404, detail="Dataset metadata not found")
+    s3_key = f"{job_id}/{S3_DATASET_PREFIX}/{DATASET_METADATA_FILE}"
 
-    return FileResponse(
-        path=metadata_path,
-        filename=DATASET_METADATA_FILE,
-        media_type="application/json"
-    )
+    with TemporaryDirectory() as tmp:
+        local_path = Path(tmp) / DATASET_METADATA_FILE
+        download_file_from_s3(local_path, s3_key)
+        return FileResponse(
+            local_path,
+            filename=DATASET_METADATA_FILE,
+            media_type="application/json"
+        )
+

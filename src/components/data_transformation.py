@@ -7,6 +7,9 @@ from src.utils.xml_parser import parse_voc_xml
 from src.utils.yolo_converter import voc_to_yolo
 from src.utils.yaml_generator import generate_data_yaml
 from src.utils.dataset_metadata import generate_dataset_metadata
+from src.utils.s3_utils import upload_file_to_s3
+from src.constants import DATASET_METADATA_FILE, S3_DATASET_PREFIX
+
 
 def transform_dataset(job_id: str, class_map: dict):
 
@@ -66,3 +69,10 @@ def transform_dataset(job_id: str, class_map: dict):
 
 # After dataset processing + data.yaml generation
     generate_dataset_metadata(job_dir=job_dir, extracted_dir=extracted_dir)
+    metadata_path = job_dir / DATASET_METADATA_FILE
+
+    upload_file_to_s3(
+        metadata_path,
+        f"{job_dir.name}/{S3_DATASET_PREFIX}/{DATASET_METADATA_FILE}"
+    )
+

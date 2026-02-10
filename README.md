@@ -12,18 +12,17 @@ Unlike consumer-facing applications, VIS_APP is an **internal ML platform** engi
 
 VIS_APP follows a linear MLOps pipeline designed for reproducibility and scalability:
 
-```mermaid
 graph TD
-    A[User (ZIP Upload)] -->|API Request| B(FastAPI Service)
-    B --> C{Data Validation}
-    C -->|Pass| D[Transformation: XML to YOLO]
-    D --> E[Metadata & Fingerprinting]
-    E --> F[Async YOLO Training]
-    F --> G[Experiment Tracking (MLflow)]
-    G --> H[Artifact Storage (AWS S3)]
-    H --> I[Model Versioning]
-    I --> J[Docker Container]
-    J --> K[Deployment (AWS ECR -> EC2)]
+    A["User (ZIP Upload)"] -->|API Request| B("FastAPI Service")
+    B --> C{"Data Validation"}
+    C -->|Pass| D["Transformation: XML to YOLO"]
+    D --> E["Metadata & Fingerprinting"]
+    E --> F["Async YOLO Training"]
+    F --> G["Experiment Tracking (MLflow)"]
+    G --> H["Artifact Storage (AWS S3)"]
+    H --> I["Model Versioning"]
+    I --> J["Docker Container"]
+    J --> K["Deployment (AWS ECR -> EC2)"]
 
     🔑 Key Capabilities
 1. Data Engineering Pipeline

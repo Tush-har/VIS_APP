@@ -25,7 +25,7 @@ graph TD
     I --> J["Docker Container"]
     J --> K["Deployment (AWS ECR -> EC2)"]
 
-    🔑 Key Capabilities
+🔑 Key Capabilities
 1. Data Engineering Pipeline
 Job Isolation: Unique job_id generation for every upload to ensure data isolation.
 
